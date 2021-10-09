@@ -10,7 +10,13 @@ function isEven($n)//Parameter
     return false;
 }
 
-
+function isValue($name){
+    if(isset($name) && (is_numeric($name) || $name != "")){
+        echo "Good! Value is set & it's not empty";
+    }else{
+        echo "Bad! Value is not set & it's empty";
+    }
+}
 /*
  * Factorial 5*4*3*2*1 
  */

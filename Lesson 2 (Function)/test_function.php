@@ -22,4 +22,4 @@ echo "\n";
 
 printNumber(1, 20, 2);
 
-
+isvalue('ifte');
