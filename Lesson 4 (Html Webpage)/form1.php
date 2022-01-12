@@ -1,6 +1,6 @@
 <?php
     header('X-XSS-Protection:0'); 
-    include_once "function.php";
+    include_once "form1-function.php";
 ?>
 <!DOCTYPE html>
 <html lang="en">
