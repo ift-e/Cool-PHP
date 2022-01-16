@@ -7,8 +7,11 @@
         'image/gif'
     ];
     if(isset($_FILES['photo'])){
-        if (in_array($_FILES['photo']['type'],$allowedTypes) !== false && $_FILES['photo']['size'] < 5*1024*1024) {
-            move_uploaded_file($_FILES['photo']['tmp_name'], "files/".$_FILES['photo']['name']);
+        $totalFiles = count($_FILES['photo']['name']);
+        for($i=0; $i<$totalFiles; $i++){
+            if (in_array($_FILES['photo']['type'][$i],$allowedTypes) !== false && $_FILES['photo']['size'][$i] < 5*1024*1024) {
+                move_uploaded_file($_FILES['photo']['tmp_name'][$i], "files/".$_FILES['photo']['name'][$i]);
+            }
         }
     }
 ?>
@@ -43,7 +46,7 @@
             <div class="column column-60 column-offset-20">
                 <form method="POST" enctype="multipart/form-data">
                     <label for="photo">Photo</label>
-                    <input type="file" name="photo" id="photo"> <br/>
+                    <input type="file" name="photo[]" id="photo" multiple> <br/>
 
                     <button type="submit">Submit</button>
                 </form>
