@@ -1,0 +1,5 @@
+ifte,hossain,18,12,20
+reaid,hossain,17,11,18
+md,faisal,21,13,2
+tanvir,ahmed,19,13,1
+saimon,hasan,18,12,12
