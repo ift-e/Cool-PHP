@@ -2,9 +2,27 @@
 require_once "inc/functions.php";
 $info = '';
 $task = $_GET['task'] ?? 'report';
+$error = $_GET['error'] ?? 0;
 if ('seed' == $task) {
     seed();
     $info = "Sedding is complete";
+}
+$fname = '';
+$lname = '';
+$roll = '';
+if (isset($_POST['submit'])) {
+    $fname = filter_input(INPUT_POST, 'fname', FILTER_SANITIZE_STRING);
+    $lname = filter_input(INPUT_POST, 'lname', FILTER_SANITIZE_STRING);
+    $roll = filter_input(INPUT_POST, 'roll', FILTER_SANITIZE_NUMBER_INT);
+
+    if (!empty($fname) && !empty($lname) && !empty($roll)) {
+        $result = addStudent($fname, $lname, $roll);
+        if ($result) {
+            header('location: index.php?task=report');
+        }else{
+            $error = 1;
+        }
+    }
 }
 ?>
 
@@ -43,10 +61,36 @@ if ('seed' == $task) {
             </div>
         </div>
         <?php
-        if('report' == $task):?>
+        if (1 == $error) : ?>
+            <div class="row">
+                <div class="column column-60 column-offset-20">
+                    <blockquote>
+                        Duplicate Roll Number
+                    </blockquote>
+                </div>
+            </div>
+        <?php endif; ?>
+        <?php
+        if ('report' == $task) : ?>
             <div class="row">
                 <div class="column column-60 column-offset-20">
                     <?php generateReport(); ?>
+                </div>
+            </div>
+        <?php endif; ?>
+        <?php
+        if ('add' == $task) : ?>
+            <div class="row">
+                <div class="column column-60 column-offset-20">
+                    <form action="index.php?task=add" method="POST">
+                        <label for="fname">First name</label>
+                        <input type="text" id="fname" name="fname" value="<?php echo $fname?>">
+                        <label for="lname">Last name</label>
+                        <input type="text" id="lname" name="lname" value="<?php echo $lname?>">
+                        <label for="roll">Roll</label>
+                        <input type="number" id="roll" name="roll" value="<?php echo $roll?>">
+                        <button type="submit" class="button-primary" name="submit">Save</button>
+                    </form>
                 </div>
             </div>
         <?php endif; ?>
