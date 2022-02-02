@@ -3,6 +3,14 @@ require_once "inc/functions.php";
 $info = '';
 $task = $_GET['task'] ?? 'report';
 $error = $_GET['error'] ?? 0;
+
+if ('delete' == $task) {
+    $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
+    if($id>0){
+        deleteStudent($id);
+        header('location: index.php?task=report');
+    }
+}
 if ('seed' == $task) {
     seed();
     $info = "Sedding is complete";
@@ -14,13 +22,27 @@ if (isset($_POST['submit'])) {
     $fname = filter_input(INPUT_POST, 'fname', FILTER_SANITIZE_STRING);
     $lname = filter_input(INPUT_POST, 'lname', FILTER_SANITIZE_STRING);
     $roll = filter_input(INPUT_POST, 'roll', FILTER_SANITIZE_NUMBER_INT);
+    $id = filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT);
 
-    if (!empty($fname) && !empty($lname) && !empty($roll)) {
-        $result = addStudent($fname, $lname, $roll);
-        if ($result) {
-            header('location: index.php?task=report');
-        }else{
-            $error = 1;
+    if ($id) {
+        // Update The Existing Student
+        if (!empty($id) && !empty($fname) && !empty($lname) && !empty($roll)) {
+            $result = updateStudent($id, $fname, $lname, $roll);
+            if ($result) {
+                header('location: index.php?task=report');
+            } else {
+                $error = 1;
+            }
+        }
+    } else {
+        // Add A New Student
+        if (!empty($fname) && !empty($lname) && !empty($roll)) {
+            $result = addStudent($fname, $lname, $roll);
+            if ($result) {
+                header('location: index.php?task=report');
+            } else {
+                $error = 1;
+            }
         }
     }
 }
@@ -40,6 +62,7 @@ if (isset($_POST['submit'])) {
     <style>
         body {
             margin-top: 30px;
+            background-color: #F4F5F6;
         }
     </style>
 </head>
@@ -84,20 +107,44 @@ if (isset($_POST['submit'])) {
                 <div class="column column-60 column-offset-20">
                     <form action="index.php?task=add" method="POST">
                         <label for="fname">First name</label>
-                        <input type="text" id="fname" name="fname" value="<?php echo $fname?>">
+                        <input type="text" id="fname" name="fname" value="<?php echo $fname ?>">
                         <label for="lname">Last name</label>
-                        <input type="text" id="lname" name="lname" value="<?php echo $lname?>">
+                        <input type="text" id="lname" name="lname" value="<?php echo $lname ?>">
                         <label for="roll">Roll</label>
-                        <input type="number" id="roll" name="roll" value="<?php echo $roll?>">
+                        <input type="number" id="roll" name="roll" value="<?php echo $roll ?>">
                         <button type="submit" class="button-primary" name="submit">Save</button>
                     </form>
                 </div>
             </div>
         <?php endif; ?>
+        <?php
+        if ('edit' == $task) :
+            $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
+            $student = getStudent($id);
+            if ($student) : ?>
+                <div class="row">
+                    <div class="column column-60 column-offset-20">
+                        <?php $studentId = $student['id'] ?>
+                        <form method="POST">
+                            <input type="hidden" name="id" value="<?php echo $id ?>">
+                            <label for="fname">First name</label>
+                            <input type="text" id="fname" name="fname" value="<?php echo $student['fname'] ?>">
+                            <label for="lname">Last name</label>
+                            <input type="text" id="lname" name="lname" value="<?php echo $student['lname'] ?>">
+                            <label for="roll">Roll</label>
+                            <input type="number" id="roll" name="roll" value="<?php echo $student['roll'] ?>">
+                            <button type="submit" class="button-primary" name="submit">Update</button>
+                        </form>
+                    </div>
+                </div>
+        <?php
+            endif;
+        endif;
+        ?>
     </div>
 
 
 
+    <script type="text/javascript" src="assets/js/script.js"></script>
 </body>
-
 </html>
