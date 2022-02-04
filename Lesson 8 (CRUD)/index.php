@@ -1,20 +1,37 @@
 <?php
 require_once "inc/functions.php";
+session_start();
 $info = '';
 $task = $_GET['task'] ?? 'report';
 $error = $_GET['error'] ?? 0;
 
 if ('delete' == $task) {
+    if (!isAdmin()) {
+        header('location: index.php?task=report');
+        return;
+    }
     $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
-    if($id>0){
+    if ($id > 0) {
         deleteStudent($id);
         header('location: index.php?task=report');
     }
 }
 if ('seed' == $task) {
+    if (!isAdmin()) {
+        header('location: index.php?task=report');
+        return;
+    }
     seed();
     $info = "Sedding is complete";
 }
+
+if("edit" == $task){
+    if (!hasPrivilege()) {
+        header('location: index.php?task=report');
+        return;
+    }
+}
+
 $fname = '';
 $lname = '';
 $roll = '';
@@ -55,14 +72,18 @@ if (isset($_POST['submit'])) {
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>CRUD Project </title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css">
     <style>
         body {
             margin-top: 30px;
-            background-color: #F4F5F6;
+            /* background-color: #F4F5F6; */
+        }
+
+        hr {
+            margin-top: 0;
         }
     </style>
 </head>
@@ -147,4 +168,5 @@ if (isset($_POST['submit'])) {
 
     <script type="text/javascript" src="assets/js/script.js"></script>
 </body>
+
 </html>

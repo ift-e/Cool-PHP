@@ -51,18 +51,34 @@ function generateReport(){
         <tr>
             <th>Name</th>
             <th>Roll</th>
-            <th width="25%">Action</th>
+            <?php
+                if (hasPrivilege()) :
+            ?>
+                    <th width="25%">Action</th>
+            <?php
+                endif;
+            ?>
         </tr>
         <?php
             foreach ($students as $student) : ?>
             <tr>
                 <td><?php printf('%s %s', $student['fname'], $student['lname']); ?></td>
                 <td><?php printf('%s', $student['roll']); ?></td>
-                <td><?php printf('<a href="index.php?task=edit&id=%1$s">Edit</a> | <a class="delete" href="index.php?task=delete&id=%1$s">Delete</a>', $student['id']); ?></td>
+                <?php
+                    if (isAdmin()):
+                ?>
+                        <td><?php printf('<a href="index.php?task=edit&id=%1$s">Edit</a> | <a class="delete" href="index.php?task=delete&id=%1$s">Delete</a>', $student['id']); ?></td>
+                <?php
+                    elseif(isEditor()):
+                ?>
+                        <td><?php printf('<a href="index.php?task=edit&id=%1$s">Edit</a>', $student['id']); ?></td>
+                <?php
+                    endif;
+                ?>
             </tr>
         <?php endforeach; ?>
     </table>
-    <?php
+    <?php 
 }
 
 function addStudent($fname, $lname, $roll){
@@ -146,4 +162,23 @@ function printRaw(){
     $serializedData = file_get_contents(DB_NAME);
     $students = unserialize($serializedData);
     return print_r($students);
+}
+
+function isAdmin(){
+    // return "admin" == $_SESSION['role'] ;
+    if (isset($_SESSION['role']) && "admin" == $_SESSION['role']) {
+        return true;
+    }return false;
+}
+
+function isEditor(){
+    // return "editor" == $_SESSION['role'];
+    if (isset($_SESSION['role']) && "editor" == $_SESSION['role']) {
+        return true;
+    }
+    return false;
+}
+
+function hasPrivilege(){
+    return (isAdmin() || isEditor());
 }
