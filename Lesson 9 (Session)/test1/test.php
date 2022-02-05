@@ -5,9 +5,8 @@ session_start([
     'cookie_domain' => '.st.com', // Main domain name
     'cookie_path' => '/',
 ]);
+echo $_SESSION['name'];
 
-$_SESSION['name'] =  "Ifte Hossain </br>";
-
-echo $_SESSION['name'] ;
+$_SESSION['age'] = 18;
 
 echo $_SESSION['age'];
