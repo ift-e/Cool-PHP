@@ -8,6 +8,8 @@
 
 function autoload ($name) {
     if(strpos($name, "Planet_") !== false){
+        // $fileDirec = explode("_", $name);
+        // include strtolower("$fileDirec[0]/$fileDirec[1].php");
         $fileName = str_replace("Planet_","", $name);
         include strtolower("planets/{$fileName}.php");
     }else{
