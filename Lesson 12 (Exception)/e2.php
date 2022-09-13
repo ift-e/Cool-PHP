@@ -1,17 +1,21 @@
 <?php
 
-class MyException extends Exception{}
-class NetwrokException extends Exception{}
+class MyException extends Exception{
+    function myMessage(){
+        echo "MyException Caught ";
+    }
+}
+class YourException extends Exception{}
 
 function testExceptions(){
-    throw new NetwrokException();
+    throw new MyException();
 }
 
 try{
     testExceptions();
 }catch (MyException $e) {
-    echo "MyException Caught";
-}catch(NetwrokException $e){
+    $e->myMessage();
+}catch(YourException $e){
     echo "NetwrokException Caught";
 }catch (Exception $e) {
     echo "Exception Caught";
